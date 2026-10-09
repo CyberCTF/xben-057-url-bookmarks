@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://www.isoloom.com/schema/v1.json
+# XBEN-057-24 URL Bookmarks (XBOW's validation benchmarks, by XBOW) as an Isoloom spec:
+# a Flask bookmark manager that keeps each visitor's saved URLs in a browser cookie.
+# The benchmark folder benchmarks/XBEN-057-24 of xbow-engineering/validation-benchmarks is vendored
+# unchanged in build/deserialization-pickle-bookmarks/app/, built by its own Dockerfiles; the overlay in build/deserialization-pickle-bookmarks/ bakes in the fixed flag.
+# `isoloom generate`, then `isoloom run docker`.
+version: 1
+name: xben-057-url-bookmarks
+
+networks:
+  lab: { cidr: 10.61.100.0/24, internet: false }
+
+machines:
+  deserialization-pickle-bookmarks:
+    networks: { lab: 10 }
+    services: [{ port: 80, name: web, http: true, publish: 80 }]
+    resources: { cpus: 1, memory_mb: 512 }
+    docker:
+      build: build/deserialization-pickle-bookmarks
+
+checks:
+  - name: the URL Bookmarks page answers
+    http: http://deserialization-pickle-bookmarks:80/list
+    wait: 180
+  - name: the bookmark list hands out its bookmarks cookie
+    script: checks/probe.sh
+    wait: 60
+
+message: |
+  URL Bookmarks answers at http://localhost:{{ machines.deserialization-pickle-bookmarks.services.0.publish }}/.
+  The bookmarks are stored in a cookie. What is inside it, and how is it read back?
