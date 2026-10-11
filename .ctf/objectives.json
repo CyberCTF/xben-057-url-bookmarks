@@ -1,0 +1,69 @@
+{
+  "objectives": [
+    {
+      "key": "main",
+      "title": "Read the flag",
+      "prompt": "Exploit the insecure deserialization weakness of a Flask bookmark manager that keeps each visitor's saved URLs in a browser cookie and recover the flag (FLAG{...}) it guards.",
+      "check": {
+        "evidence": "SECRET",
+        "format": "FLAG{%s}"
+      },
+      "dev": "FLAG{dev-xben-057-url-bookmarks}",
+      "hints": [
+        "Find the client-side data the server deserializes, and in which serialization format."
+      ],
+      "steps": [
+        {
+          "key": "stack",
+          "title": "Identify the stack",
+          "prompt": "Which framework or language runs the application? (name only)",
+          "check": {
+            "answer": [
+              "flask",
+              "python",
+              "werkzeug",
+              "python flask"
+            ]
+          }
+        },
+        {
+          "key": "class",
+          "title": "Name the weakness",
+          "prompt": "Which vulnerability class lets attacker-controlled data be turned back into objects?",
+          "check": {
+            "answer": [
+              "deserialization",
+              "insecure deserialization",
+              "unsafe deserialization",
+              "object injection"
+            ]
+          }
+        },
+        {
+          "key": "where",
+          "title": "Find the storage",
+          "prompt": "Where does the application keep your bookmarks?",
+          "check": {
+            "answer": [
+              "cookie",
+              "a cookie",
+              "browser cookie",
+              "cookies"
+            ]
+          }
+        },
+        {
+          "key": "format",
+          "title": "Name the format",
+          "prompt": "Which Python serialization format encodes them?",
+          "check": {
+            "answer": [
+              "pickle",
+              "python pickle"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
